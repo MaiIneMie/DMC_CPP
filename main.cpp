@@ -2,7 +2,7 @@
 #include <vector>
 #include <fstream>
 
-#include "Obiekt.h"
+#include "ObiektSymulowany.h"
 #include "Offline.h"
 #include "Ograniczenia.h"
 #include "Online.h"
@@ -22,7 +22,7 @@ int main()
     std::cout << "Scenariusz A: Model idealny." << std::endl;
 
     // 1. Stworzenie obiektu do generacji odpowiedzi skokowej s
-    Obiekt obj_s_A (0.8351, 0.2713, 2);
+    ObiektSymulowany obj_s_A (0.8351, 0.2713, 2);
 
     // 2. Przekazanie parametrów do obiektu generowania s
     Parametry param_A (30, 10, 5, 1.0, 1.0, obj_s_A);
@@ -37,7 +37,7 @@ int main()
     Ograniczenia ogr_A (0.0, 1.0, -0.2, 0.2);
 
     // 6. Stworzenie obiektu sterowanego (takiego samego jak ten generujący s)
-    Obiekt obj_A (0.8351, 0.2713, 2);
+    ObiektSymulowany obj_A (0.8351, 0.2713, 2);
 
     // 7. Stworzenie instancji pętli regulatora
     Online online_A;
@@ -67,7 +67,7 @@ int main()
     std::cout << "Scenariusz B: Model niedokładny." << std::endl;
 
     // 1. Stworzenie obiektu do generacji odpowiedzi skokowej
-    Obiekt obj_s_B (0.8, 0.2, 2);
+    ObiektSymulowany obj_s_B (0.8, 0.2, 2);
 
     // 2. Przekazanie parametrów do obiektu generowania s
     Parametry param_B (30, 10, 5, 1.0, 1.0, obj_s_B);
@@ -82,7 +82,7 @@ int main()
     Ograniczenia ogr_B (0.0, 1.0, -0.2, 0.2);
 
     // 6. Stworzenie obiektu sterowanego (innego niż generującego s)
-    Obiekt obj_B(0.8351, 0.2713, 2);
+    ObiektSymulowany obj_B(0.8351, 0.2713, 2);
 
     // 7. Stworzenie instancji pętli regulatora
     Online online_B;

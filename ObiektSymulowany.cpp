@@ -1,7 +1,7 @@
-#include "Obiekt.h"
+#include "ObiektSymulowany.h"
 
 //Konstruktor
-Obiekt::Obiekt(double a, double b, int d)
+ObiektSymulowany::ObiektSymulowany(double a, double b, int d)
 : a(a), b(b), d(d), y_k(0.0) 
 {
 // Utworzenie bufora o rozmiarze o 1 większym niż d
@@ -10,7 +10,7 @@ bufor_u.resize (d+1,0.0);
 
 
 // Symulacja kroku
-double Obiekt::krok_online(double u_k)
+double ObiektSymulowany::krok_online(double u_k)
 {
 // Przesunięcie wartości budora (usunięcie pierwszego, najstarszego elementu i wpisanie najnowszego na koniec)
 bufor_u.erase(bufor_u.begin());
@@ -26,5 +26,5 @@ double y_k1 = a * y_k + b * u_d;
 y_k = y_k1;
 
 // Zwrócenie wyniku funkcji
-return y_k1;
+return y_k;
 }

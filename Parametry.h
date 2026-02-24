@@ -2,13 +2,13 @@
 #define PARAMETRY_H
 
 #include <Eigen/Dense>
-#include "Obiekt.h"
+#include "ObiektBaza.h"
 
 class Parametry {
 
     private:
     // Prywatna funkcja do generowania s (używana tylko wewnętrznie)
-    Eigen::VectorXd generuj_s(Obiekt& obj, int D);
+    Eigen::VectorXd generuj_s(ObiektBaza& obj, int D);
     void oblicz_offline();
 
     public:
@@ -23,7 +23,7 @@ class Parametry {
     Eigen::VectorXd s;
 
     // Konstruktor
-    Parametry(int d, int n, int nu, double a, double b, Obiekt& obj);
+    Parametry(int d, int n, int nu, double a, double b, ObiektBaza& obj);
 };
 
 #endif
