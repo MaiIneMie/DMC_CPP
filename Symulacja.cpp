@@ -1,5 +1,6 @@
 #include "Symulacja.h"
 #include <fstream>
+#include <iostream>
 
 // Konstruktor
 Symulacja::Symulacja(int kroki, double yzad, ObiektBaza& obj, Regulator& reg)
