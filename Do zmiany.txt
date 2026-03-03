@@ -1,0 +1,4 @@
+1. Obiekt - dwie klasy: ObiektBaza (abstrakcyjna) oraz ObiektSymulowany (konkretna implementacja, parametry a,b,d,bufor,równanie różnicowe). 
+2. Regulator. Parametry (D,N,Nu,alpha, beta, metoda generuj_s). Ograniczenia, Stan, Offline, Online, wskaźnik do ObiektBaza (model wewnętrzny). 
+3. Symulacja. Liczba kroków i wartość zadana, pętla krok, zapis wyników, wskaźnik do ObiektBaza oraz Regulator (to wszystko przeniesione z main). 
+4. main. Utworzenie dwóch instancji ObiektSymulowany o różnych parametrach dla modelu wewnętrznego i sterowania obiektu, przekazanie wskaźnika do Regulatora (jako model wewnętrzny do generacji s) oraz do Symulacji (jako obiekt sterowany). Przeprowadzenie symulacji.
