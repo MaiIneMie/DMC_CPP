@@ -47,5 +47,5 @@ for (int k = 0; k < kroki; k++) {
 }
 
 plik.close();
-std::cout << "Wyniki zapisane do: wyniki_dmc.csv" << std::endl;
+std::cout << "Wyniki zapisane." << std::endl;
 }
