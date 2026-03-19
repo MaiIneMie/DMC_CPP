@@ -1,13 +1,22 @@
 #include "Regulator.h"
 
 // Konstruktor
-Regulator::Regulator(int d, int n, int nu, double a, double b, double u_mi, double u_ma, double dv_mi, double dv_ma, ObiektBaza& obj)
-: D(d), N(n), Nu(nu), alpha(a), beta(b), u_min(u_mi), u_max(u_ma), dv_min(dv_mi), dv_max(dv_ma), obj(obj)
+Regulator::Regulator(int d, int n, int nu, double a, double b, double u_mi, double u_ma, double dv_mi, double dv_ma, double a_w, double b_w, int d_w)
+: D(d), N(n), Nu(nu), alpha(a), beta(b), u_min(u_mi), u_max(u_ma), dv_min(dv_mi), dv_max(dv_ma)
 {
+    mod_wew = ObiektSymulowany(a_w, b_w, d_w);
     v = Eigen::VectorXd::Zero(D - 1);
     s = generuj_s(D);
     oblicz_macierze();
 }
+
+Regulator::Regulator(int d, int n, int nu, double a, double b, double u_mi, double u_ma, double dv_mi, double dv_ma, Eigen::VectorXd s)
+: D(d), N(n), Nu(nu), alpha(a), beta(b), u_min(u_mi), u_max(u_ma), dv_min(dv_mi), dv_max(dv_ma), s(s)
+{
+    v = Eigen::VectorXd::Zero(D - 1);
+    oblicz_macierze();
+}
+    
 
 
 // Funkcja generująca odpowiedź skokową
@@ -19,7 +28,7 @@ Eigen::VectorXd Regulator::generuj_s(int D)
     // Symulacja działania obiektu na wywołanie wartośći skokowej 1
     for (int k = 0; k < D; k++)
     {
-        s(k) = obj.krok_online(1.0);
+        s(k) = mod_wew->krok_online(1.0);
     }
 
     // Zwrot wektora odpowiedzi skokowej
@@ -75,8 +84,6 @@ void Regulator::oblicz_K()
     K = (M.transpose() * Psi * M + Lambda).inverse() * M.transpose();
 }
 
-
-
 void Regulator::oblicz_macierze() // Macierze
 {
     oblicz_M();
@@ -97,7 +104,7 @@ void Regulator::krok_regulacji(double y_k, double yzad_k)
     // Wektor wartości zadanych Yzad (N elementów = N wierszy)
     Eigen::VectorXd Yzad = Eigen::VectorXd::Constant(N, yzad_k);
 
-    // Wektor wolnej odpoweidzi z przeszłością Y0 = y_k + Mp*v
+    // Wektor wolnej odpowiedzi z przeszłością Y0 = y_k + Mp*v
     Eigen::VectorXd Y0 = Eigen::VectorXd::Constant(N, y_k) + Mp * v;
 
     // Wektor błędu E = Yzad - Y0

@@ -2,7 +2,9 @@
 #define REGULATOR_H
 
 #include <Eigen/Dense>
+#include <optional>
 #include "ObiektBaza.h"
+#include "ObiektSymulowany.h"
 
 class Regulator
 {
@@ -13,7 +15,7 @@ class Regulator
     Eigen::MatrixXd M;   // macierz dynamiczna (N×Nu)
     Eigen::MatrixXd Mp;  // macierz przeszłości (N×(D-1))
     Eigen::MatrixXd K;   // macierz wzmocnień (Nu×N)
-    ObiektBaza& obj;     // Wskaźnik do obiektu
+    std::optional<ObiektSymulowany> mod_wew; // Modelu wewnętrzny obiektu (opcjonalny)
     Eigen::VectorXd s;   // Macierz odpowiedzi skokowej
 
     // Stan regulatora
@@ -38,8 +40,12 @@ class Regulator
 
     public:
     // Inicjacja
-    Regulator(int d, int n, int nu, double a, double b, double u_mi, double u_ma, double dv_mi, double dv_ma, ObiektBaza& obj);
+    // Konstruktor 1 - generuje s z modelu wewnętrznego
+    Regulator(int d, int n, int nu, double a, double b, double u_mi, double u_ma, double dv_mi, double dv_ma, double a_w, double b_w, int d_w);
 
+    // Konstruktor 2 - przyjmuje gotowy wektor s
+    Regulator(int d, int n, int nu, double a, double b, double u_mi, double u_ma, double dv_mi, double dv_ma, Eigen::VectorXd s);
+    
     void krok_regulacji(double y_k, double yzad_k); // Jeden krok regulacji
     double get_u_k() const { return u_k; } // Getter dla Symulacja
 };
