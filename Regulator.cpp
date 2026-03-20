@@ -81,7 +81,12 @@ void Regulator::oblicz_K()
     Eigen::MatrixXd Lambda = beta * Eigen::MatrixXd::Identity(Nu, Nu);
 
     // Obliczenie K = (M^T * Psi * M + Lambda)^(-1) * M^T
-    K = (M.transpose() * Psi * M + Lambda).inverse() * M.transpose();
+    // 1. Obliczenie A (A = M^T · Psi · M + Lambda)
+    // 2. Obliczenie B (B = M^T · Psi)
+    // 3. Rozłożenie A na trzy macierze - L (trójkątna dolna), D (diagonalna), L^T
+    // 4. Rozwiązanie A · K = B
+    K = (M.transpose() * Psi * M + Lambda).ldlt().solve(M.transpose() * Psi);
+    
 }
 
 void Regulator::oblicz_macierze() // Macierze
