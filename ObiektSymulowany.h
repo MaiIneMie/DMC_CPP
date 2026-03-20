@@ -9,7 +9,7 @@
 class ObiektSymulowany : public ObiektBaza {
     private:
     double a, b, y_k;
-    int d;
+    int d, start, rozmiar; // start i rozmiar - dla krok_online
     std::vector<double> bufor_u;
 
     public:
