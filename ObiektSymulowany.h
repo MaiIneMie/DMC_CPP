@@ -2,6 +2,7 @@
 #define OBIEKTYMULOWANY_H
 
 #include <vector>
+#include <stdexcept>
 #include "ObiektBaza.h"
 
 // Klasa dziedziczy po ObiektBaza

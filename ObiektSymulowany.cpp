@@ -4,10 +4,17 @@
 ObiektSymulowany::ObiektSymulowany(double a, double b, int d)
 : a(a), b(b), d(d), y_k(0.0) 
 {
+if (d < 1)
+{
+throw std::invalid_argument("Opóźnienie musi być większe lub równe 1");
+}
+if (b == 0)
+{
+throw std::invalid_argument("Współczynnik b musi być różny od 0 (wpływ sterowania).");
+}
 // Utworzenie bufora o rozmiarze o 1 większym niż d
 bufor_u.resize (d+1,0.0);
 }
-
 
 // Symulacja kroku
 double ObiektSymulowany::krok_online(double u_k)
