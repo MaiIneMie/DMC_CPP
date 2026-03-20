@@ -15,7 +15,7 @@ class Regulator
     Eigen::MatrixXd M;   // macierz dynamiczna (N×Nu)
     Eigen::MatrixXd Mp;  // macierz przeszłości (N×(D-1))
     Eigen::MatrixXd K;   // macierz wzmocnień (Nu×N)
-    std::optional<ObiektSymulowany> mod_wew; // Modelu wewnętrzny obiektu (opcjonalny)
+    std::optional<ObiektSymulowany> mod_wew; // Model wewnętrzny obiektu (opcjonalny)
     Eigen::VectorXd s;   // Macierz odpowiedzi skokowej
 
     // Stan regulatora
