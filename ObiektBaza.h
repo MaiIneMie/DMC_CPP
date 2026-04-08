@@ -4,6 +4,8 @@
 class ObiektBaza {
 public:
     virtual double krok_online(double u_k) = 0; // Deklaracja
+    virtual void reset() = 0;
+    virtual double get_stan() = 0;
     virtual ~ObiektBaza() {}  // Destruktor
 };
 
