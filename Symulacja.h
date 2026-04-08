@@ -14,8 +14,8 @@ class Symulacja
     // Podanie parametrów dla symulacji (liczba kroków i wartość zadana)
     const int kroki;
     const double yzad;
-    ObiektBaza& obj; // Wskaźnik do obiektu
-    Regulator& reg; // Wskaźnik do obiektu
+    ObiektBaza& obj; // Referencja do obiektu
+    Regulator& reg; // Referencja do regulatora
     // Historia dla y oraz u
     std::vector<double> y_historia;
     std::vector<double> u_historia;
