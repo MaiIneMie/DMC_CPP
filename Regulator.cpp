@@ -138,7 +138,6 @@ void Regulator::krok_regulacji(double y_k, double yzad_k)
 
     v(0) = v_k; // Element pierwszy to najnowszy przyrost
 
-    this->y_k = y_k;
     this->u_k = u_k;
 } 
 

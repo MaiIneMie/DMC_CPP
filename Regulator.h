@@ -19,7 +19,6 @@ class Regulator
     Eigen::VectorXd s;   // Macierz odpowiedzi skokowej
 
     // Stan regulatora
-    double y_k = 0.0;   // obecne wyjście
     double u_k = 0.0;   // obecne sterowanie
     Eigen::VectorXd v;  // historia przyrostów (długość D-1)
 
