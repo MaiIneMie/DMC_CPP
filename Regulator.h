@@ -2,7 +2,6 @@
 #define REGULATOR_H
 
 #include <Eigen/Dense>
-#include <optional>
 #include "ObiektBaza.h"
 #include "ObiektSymulowany.h"
 
@@ -15,7 +14,6 @@ class Regulator
     Eigen::MatrixXd M;   // macierz dynamiczna (N×Nu)
     Eigen::MatrixXd Mp;  // macierz przeszłości (N×(D-1))
     Eigen::MatrixXd K;   // macierz wzmocnień (Nu×N)
-    std::optional<ObiektSymulowany> mod_wew; // Model wewnętrzny obiektu (opcjonalny)
     Eigen::VectorXd s;   // Macierz odpowiedzi skokowej
 
     // Stan regulatora
@@ -29,7 +27,6 @@ class Regulator
     double dv_max;
 
     // Metody
-    Eigen::VectorXd generuj_s(int D);
     // Funkcje pomocnicze do macierzy
     void oblicz_M();
     void oblicz_Mp();

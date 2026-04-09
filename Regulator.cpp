@@ -4,9 +4,13 @@
 Regulator::Regulator(int d, int n, int nu, double a, double b, double u_mi, double u_ma, double dv_mi, double dv_ma, double a_w, double b_w, int d_w)
 : D(d), N(n), Nu(nu), alpha(a), beta(b), u_min(u_mi), u_max(u_ma), dv_min(dv_mi), dv_max(dv_ma)
 {
-    mod_wew = ObiektSymulowany(a_w, b_w, d_w);
+    ObiektSymulowany model_lokalny(a_w, b_w, d_w);
     v = Eigen::VectorXd::Zero(D - 1);
-    s = generuj_s(D);
+    s.resize(D);
+    for (int i = 0; i < D; i++)
+    {
+        s(i) = model_lokalny.krok_online(1.0); // generowanie odpowiedzi skokowej
+    }
     oblicz_macierze();
 }
 
@@ -17,24 +21,6 @@ Regulator::Regulator(int d, int n, int nu, double a, double b, double u_mi, doub
     oblicz_macierze();
 }
     
-
-
-// Funkcja generująca odpowiedź skokową
-Eigen::VectorXd Regulator::generuj_s(int D)
-{
-    // Deklaracja wektora wypełnionego wartościami odpowiedzi skokowej (rozmiar D)
-    Eigen::VectorXd s(D);
-
-    // Symulacja działania obiektu na wywołanie wartośći skokowej 1
-    for (int k = 0; k < D; k++)
-    {
-        s(k) = mod_wew->krok_online(1.0);
-    }
-
-    // Zwrot wektora odpowiedzi skokowej
-    return s;
-}
-
 void Regulator::oblicz_M()
 {
     // Dostosowanie wymiarów macierzy (N wierszy, Nu kolumn)
@@ -137,7 +123,5 @@ void Regulator::krok_regulacji(double y_k, double yzad_k)
     }
 
     v(0) = v_k; // Element pierwszy to najnowszy przyrost
-
-    this->u_k = u_k;
 } 
 
