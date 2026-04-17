@@ -21,12 +21,13 @@ class ObiektSymulowany : public ObiektBaza {
     void reset() override
     {
         std::fill(bufor_u.begin(), bufor_u.end(), 0.0); // Wypełnienie wektora bufor zerami
+        start = 0;  // Reset miejsca startu dla krok_online
+        y_k = 0.0;  // Reset stanu wyjścia.
     };
     double get_stan() const override
     {
-       return bufor_u[start];
+       return y_k;
     };
-
 
 };
 
