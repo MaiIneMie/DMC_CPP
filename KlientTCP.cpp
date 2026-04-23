@@ -1,11 +1,11 @@
-#include "KlientMATLAB.h"
+#include "KlientTCP.h"
 #include "TCP.h"
 
 #include <iostream>
 #include <ws2tcpip.h>
 
 // Klasa dziedziczy po ObiektBaza
-KlientMATLAB :: KlientMATLAB(const std::string& adres_ip, int port, int D, int kroki)
+KlientTCP :: KlientTCP(const std::string& adres_ip, int port, int D, int kroki)
 : D(D), kroki(kroki), y_k(0.0), sock(INVALID_SOCKET)
 {
     // Inicjalizacja Winsock
@@ -33,7 +33,7 @@ KlientMATLAB :: KlientMATLAB(const std::string& adres_ip, int port, int D, int k
         );
     }
 
-    // Adres serwera (MATLAB na tym samym komputerze)
+    // Adres serwera
     sockaddr_in server;
     server.sin_family = AF_INET;
     server.sin_port = htons(port);
@@ -62,7 +62,7 @@ KlientMATLAB :: KlientMATLAB(const std::string& adres_ip, int port, int D, int k
 
     try
     {
-    // Konwersja wartości na double dla łatwiejszej integracji z MATLAB
+    // Konwersja wartości na double dla łatwiejszej integracji
     double D_d = static_cast<double>(D);
     double kroki_d = static_cast<double>(kroki);
     // Wysłanie liczby kroków i długości odpowiedzi skokowej
@@ -77,7 +77,7 @@ KlientMATLAB :: KlientMATLAB(const std::string& adres_ip, int port, int D, int k
     }
 };
 
-double KlientMATLAB::krok_online(double u_k)
+double KlientTCP::krok_online(double u_k)
 {
 wyslij_wszystko(sock, (const char*)&u_k, sizeof(u_k));
 odbierz_wszystko(sock, (char*)&y_k, sizeof(y_k));

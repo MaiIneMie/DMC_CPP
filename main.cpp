@@ -4,7 +4,7 @@
 
 #include "ObiektSymulowany.h"
 #include "Symulacja.h"
-#include "KlientMATLAB.h"
+#include "KlientTCP.h"
 
 // Przypadek modelu wewnętrznego
 void wariant(
@@ -36,7 +36,7 @@ void wariant(
 {
 
     // Inicjacja komunikacji z obiektem
-    KlientMATLAB obj("127.0.0.1", 12345, D, kroki);
+    KlientTCP obj("127.0.0.1", 12345, D, kroki);
 
     // Utworzenie wektora s o długości D
     Eigen::VectorXd s = obj.generuj_s(D);
@@ -86,7 +86,7 @@ int main()
     
     std::cout << "Scenariusz B zakończony." << std::endl << std::endl;
 
-    // === SCENARIUSZ C: Model zewnętrzny (TCP/MATLAB) ===
+    // === SCENARIUSZ C: Model zewnętrzny (TCP/MATLAB,C++) ===
     std::cout << "Scenariusz C: Model zewnętrzny przez TCP." << std::endl;
 
     try {
