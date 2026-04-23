@@ -1,13 +1,10 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
-#include <winsock2.h>
-#include <ws2tcpip.h>
 
 #include "ObiektSymulowany.h"
 #include "Symulacja.h"
-
-#pragma comment(lib, "ws2_32.lib")
+#include "KlientMATLAB.h"
 
 // Przypadek modelu wewnętrznego
 void wariant(
@@ -37,85 +34,24 @@ void wariant(
     // Parametry dla symulacji
     int kroki, double yzad, const std::string& nazwa_pliku)
 {
+
+    // Inicjacja komunikacji z obiektem
+    KlientMATLAB obj("127.0.0.1", 12345, D, kroki);
+
     // Utworzenie wektora s o długości D
-    Eigen::VectorXd s(D);
-     // Inicjalizacja Winsock
-    WSADATA wsaData;
-    WSAStartup(MAKEWORD(2,2), &wsaData);
+    Eigen::VectorXd s = obj.generuj_s(D);
 
-    // Stworzenie socketu
-    SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
-
-    // Adres serwera (MATLAB na tym samym komputerze)
-    sockaddr_in server;
-    server.sin_family = AF_INET;
-    server.sin_port = htons(12345);
-    inet_pton(AF_INET, "127.0.0.1", &server.sin_addr);
-
-    // Połączenie
-    connect(sock, (sockaddr*)&server, sizeof(server));
-    std::cout << "Połączono!" << std::endl;  
-
-    // Konwersja wartości na double dla łatwiejszej integracji z MATLAB
-    double D_d = (double)D;
-    double kroki_d = (double)kroki;
-
-    // Wysłanie liczby kroków i długości odpowiedzi skokowej
-    send(sock, (char*)&D_d, sizeof(D_d), 0);
-    std::cout << "Wysłano D o wartości: " << D_d << std::endl;
-    send(sock, (char*)&kroki_d, sizeof(kroki_d), 0);
-    std::cout << "Wysłano kroków: " << kroki_d << std::endl;
-
-    // Zadanie wartości 1 na sterowanie dla odpowiedzi skokowej
-    double u_s = 1.0;
-
-    for (int i = 0; i < D; i++)
-    {
-        send(sock, (char*)&u_s, sizeof(u_s), 0);
-    }
-
-    // Odbieranie wektora s o długości D
-    for (int i = 0; i < D; i++)
-    {
-        recv(sock, (char*)&s(i), sizeof(double), 0);
-    }
-    std::cout << "Odebrano wektor odpowiedzi skokowej." << std::endl;
-
-    // Stworzenie regulatora z wektorem s
+    // Stworzenie regulatora
     Regulator reg(D, N, Nu, alpha, beta, u_min, u_max, dv_min, dv_max, s);
 
-    // Utworzenie pomocniczych wektorów dla historii wejść i wyjść
-    std::vector<double> y_historia;
-    std::vector<double> u_historia;
+    // 3. Stworzenie instancji symulacji
+    Symulacja sym (kroki, yzad, obj, reg);
 
-    // Pętla regulacji
-    for (int k = 0; k < kroki; k++)
-    {
-    // Wysłanie sterowania do MATLABa
-    double u_k = reg.get_u_k();
-    send(sock, (char*)&u_k, sizeof(u_k), 0);
-    
-    // Odebranie wyjścia obiektu
-    double y_k;
-    recv(sock, (char*)&y_k, sizeof(y_k), 0);
-    
-    // Krok regulacji
-    reg.krok_regulacji(y_k, yzad);
-    y_historia.push_back(y_k);
-    u_historia.push_back(reg.get_u_k());
-    }
+    // 4. Uruchomienie pętli regulacji
+    sym.uruchom();
 
-    // Zapis wyników
-    std::ofstream plik(nazwa_pliku);
-    plik << "k,y,u\n";
-    for (int k = 0; k < kroki; k++)
-    {
-        plik << k << "," << y_historia[k] << "," << u_historia[k] << "\n";
-    }
-
-    // Zamknięcie połączenia i czyszczenie
-    closesocket(sock);
-    WSACleanup();
+    // 5. Zapisanie wyników do pliku csv
+    sym.zapisz_csv(nazwa_pliku);
 }
 
 
@@ -153,10 +89,13 @@ int main()
     // === SCENARIUSZ C: Model zewnętrzny (TCP/MATLAB) ===
     std::cout << "Scenariusz C: Model zewnętrzny przez TCP." << std::endl;
 
-    wariant(
-        // Parametry dla regulatora
-        30, 10, 5, 1.0, 1.0, 0.0, 1.0, -0.2, 0.2,
-        // Parametry dla symulacji
-        100, 1.0, "wyniki_dmc_C.csv");
-    std::cout << "Scenariusz C zakończony." << std::endl << std::endl;
+    try {
+    wariant(30, 10, 5, 1.0, 1.0, 0.0, 1.0, -0.2, 0.2,
+    100, 1.0, "wyniki_dmc_C.csv");
+    std::cout << "Scenariusz C zakonczony." << std::endl << std::endl;
+    }
+    catch (const std::exception& e) 
+    {
+    std::cerr << "Scenariusz C nie powiodl sie: " << e.what() << std::endl << std::endl;
+    }
 }
