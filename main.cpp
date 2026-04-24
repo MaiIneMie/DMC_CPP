@@ -32,11 +32,13 @@ void wariant(
     // Parametry dla regulatora
     int D, int N, int Nu, double alpha, double beta, double u_min, double u_max, double dv_min, double dv_max,
     // Parametry dla symulacji
-    int kroki, double yzad, const std::string& nazwa_pliku)
+    int kroki, double yzad, const std::string& nazwa_pliku,
+    // Parametry dla komunikacji
+    const std::string& adres_pc)
 {
 
     // Inicjacja komunikacji z obiektem
-    KlientTCP obj("127.0.0.1", 12345, D, kroki);
+    KlientTCP obj(adres_pc, 12345, D, kroki);
 
     // Utworzenie wektora s o długości D
     Eigen::VectorXd s = obj.generuj_s(D);
@@ -55,8 +57,12 @@ void wariant(
 }
 
 
-int main()
+int main(int argc, char* argv[])
 {
+    // Adres PC, na którym działa serwer MATLAB.
+    // Bez argumentu domyślnie uzywa "127.0.0.1" (localhost, do testow na PC).
+    std::string adres_pc = (argc > 1) ? argv[1] : "127.0.0.1";
+
     std::cout << "=== DMC w C++ - Symulacja ===" << std::endl << std::endl;
 
     // === SCENARIUSZ A: Model idealny ===
@@ -91,7 +97,7 @@ int main()
 
     try {
     wariant(30, 10, 5, 1.0, 1.0, 0.0, 1.0, -0.2, 0.2,
-    100, 1.0, "wyniki_dmc_C.csv");
+    100, 1.0, "wyniki_dmc_C.csv", adres_pc);
     std::cout << "Scenariusz C zakonczony." << std::endl << std::endl;
     }
     catch (const std::exception& e) 
