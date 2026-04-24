@@ -1,14 +1,12 @@
-#ifndef TCP_H
-#define TCP_H
+#ifndef TCPWIN_H
+#define TCPWIN_H
 
-#include <sys/socket.h>
-#include <errno.h>
-#include <cstring>
+#include <winsock2.h>
 #include <stdexcept>
 #include <string>
 
 // Wysłanie dokładnie 'rozmiaru' bajtów z bufora 'dane' do socketu 'sock'.
-inline void wyslij_wszystko(int sock, const char* dane, int rozmiar)
+inline void wyslij_wszystko(SOCKET sock, const char* dane, int rozmiar)
 {
     // Obsługa wyjątków niepoprawnego rozmiaru
     if (rozmiar < 0)
@@ -31,10 +29,10 @@ inline void wyslij_wszystko(int sock, const char* dane, int rozmiar)
         );
 
         // Wyrzucenie std::runtime_error przy błędzie sieci lub zamknięciu połączenia.
-        if (wyslane_teraz < 0)
+        if (wyslane_teraz == SOCKET_ERROR)
         {
             throw std::runtime_error(
-                "Blad wysylania TCP: " + std::string(strerror(errno))
+                "Blad wysylania TCP, kod: " + std::to_string(WSAGetLastError()) 
             );
         }
 
@@ -50,7 +48,7 @@ inline void wyslij_wszystko(int sock, const char* dane, int rozmiar)
 }
 
 // Odebranie dokładnie 'rozmiaru' bajtów do bufora 'dane' z socketu 'sock'.
-inline void odbierz_wszystko(int sock, char* dane, int rozmiar)
+inline void odbierz_wszystko(SOCKET sock, char* dane, int rozmiar)
 {
     // Obsługa wyjątków niepoprawnego rozmiaru
     if (rozmiar < 0)
@@ -73,10 +71,10 @@ inline void odbierz_wszystko(int sock, char* dane, int rozmiar)
         );
 
         // Wyrzucenie std::runtime_error przy błędzie sieci lub zamknięciu połączenia.
-        if (odebrane_teraz < 0)
+        if (odebrane_teraz == SOCKET_ERROR)
         {
             throw std::runtime_error(
-                "Blad odbierania TCP: " + std::string(strerror(errno))
+                "Blad odbierania TCP, kod: " + std::to_string(WSAGetLastError())
             );
         }
         if (odebrane_teraz == 0)

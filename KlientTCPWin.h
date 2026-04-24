@@ -1,23 +1,23 @@
-#ifndef KLIENTTCP_H
-#define KLIENTTCP_H
+#ifndef KLIENTTCPWIN_H
+#define KLIENTTCPWIN_H
 
+#include <winsock2.h>
 #include <string>
-#include <unistd.h>
 #include "ObiektBaza.h"
 
 // Klasa dziedziczy po ObiektBaza
-class KlientTCP : public ObiektBaza 
+class KlientTCPWin : public ObiektBaza 
 {
     private:
     int D, kroki;
     double y_k;
 
     // Stworzenie socketu
-    int sock;
+    SOCKET sock;
 
     public:
     //Konstruktor
-    KlientTCP(const std::string& adres_ip, int port, int D, int kroki);
+    KlientTCPWin(const std::string& adres_ip, int port, int D, int kroki);
 
     double krok_online(double u_k) override;
     void reset() override
@@ -30,7 +30,14 @@ class KlientTCP : public ObiektBaza
     };
 
     // Destruktor
-    ~KlientTCP();
+    ~KlientTCPWin() 
+    {
+    // Zamknięcie połączenia i czyszczenie
+    if (sock != INVALID_SOCKET) {
+        closesocket(sock);
+    }
+    WSACleanup();
+    };
 };
 
 #endif

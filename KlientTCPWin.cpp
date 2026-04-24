@@ -1,24 +1,35 @@
-#include "KlientTCP.h"
-#include "TCP.h"
+#include "KlientTCPWin.h"
+#include "TCPWin.h"
 
 #include <iostream>
-#include <cstring>
-#include <cerrno>
-#include <arpa/inet.h>
-#include <unistd.h>
+#include <ws2tcpip.h>
 
 // Klasa dziedziczy po ObiektBaza
-KlientTCP :: KlientTCP(const std::string& adres_ip, int port, int D, int kroki)
-: D(D), kroki(kroki), y_k(0.0), sock(-1)
+KlientTCPWin :: KlientTCPWin(const std::string& adres_ip, int port, int D, int kroki)
+: D(D), kroki(kroki), y_k(0.0), sock(INVALID_SOCKET)
 {
+    // Inicjalizacja Winsock
+    WSADATA wsaData;
+
+    // Obsługa wyjątku startu
+    int wynik = WSAStartup(MAKEWORD(2,2), &wsaData);
+    if (wynik != 0)
+    {
+        throw std::runtime_error(
+            "Blad WSAStartup, kod: " + std::to_string(wynik)
+        );
+    }
+
     // Stworzenie socketu
     sock = socket(AF_INET, SOCK_STREAM, 0);
 
     // Obsługa wyjątku socketu
-    if (sock < 0)
+    if (sock == INVALID_SOCKET)
     {
+        int kod = WSAGetLastError();
+        WSACleanup();
         throw std::runtime_error(
-            "Blad tworzenia socketu: " + std::string(strerror(errno))
+            "Blad tworzenia socketu, kod: " + std::to_string(kod)
         );
     }
 
@@ -30,7 +41,8 @@ KlientTCP :: KlientTCP(const std::string& adres_ip, int port, int D, int kroki)
     int wynik_ip = inet_pton(AF_INET, adres_ip.c_str(), &server.sin_addr);
     if (wynik_ip != 1)
     {
-        close(sock);
+        closesocket(sock);
+        WSACleanup();
         throw std::runtime_error(
             "Bledny adres IP: " + adres_ip
         );
@@ -38,11 +50,13 @@ KlientTCP :: KlientTCP(const std::string& adres_ip, int port, int D, int kroki)
 
     // Połączenie
     // Obsługa wyjątku połączenia
-    if (connect(sock, (sockaddr*)&server, sizeof(server)) < 0)
+    if (connect(sock, (sockaddr*)&server, sizeof(server)) == SOCKET_ERROR)
     {
-        close(sock);
+        int kod = WSAGetLastError();
+        closesocket(sock);
+        WSACleanup();
         throw std::runtime_error(
-            "Blad polaczenia: " + std::string(strerror(errno))
+            "Blad polaczenia, kod: " + std::to_string(kod)
         );
     }
 
@@ -57,19 +71,13 @@ KlientTCP :: KlientTCP(const std::string& adres_ip, int port, int D, int kroki)
     }
     catch (...)
     {
-    close(sock);
+    closesocket(sock);
+    WSACleanup();
     throw;
     }
 };
 
-KlientTCP::~KlientTCP()
-{
-    if (sock >= 0) {
-        close(sock);
-    }
-}
-
-double KlientTCP::krok_online(double u_k)
+double KlientTCPWin::krok_online(double u_k)
 {
 wyslij_wszystko(sock, (const char*)&u_k, sizeof(u_k));
 odbierz_wszystko(sock, (char*)&y_k, sizeof(y_k));
