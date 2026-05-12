@@ -84,7 +84,7 @@ int main(int argc, char* argv[])
 
      wariant(
     // Parametry dla regulatora
-    30, 10, 5, 1.0, 1.0, 0.0, 1.0, -0.2, 0.2, 0.8, 0.2, 2,
+    30, 10, 5, 1.0, 1.0, 0.0, 1.0, -0.2, 0.2, 0.7, 0.18, 2,
     // Parametry dla obiektu (model wewnętrzny)
     0.8351, 0.2713, 2,
     // Parametry dla symulacji
