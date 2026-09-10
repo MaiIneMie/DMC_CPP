@@ -12,13 +12,13 @@ public:
     // Metoda dla generacji odpowiedzi skokowej
     Eigen::VectorXd generuj_s(int D)
     {   
-        reset(); // Wyczyszczenie pamięci dla obiektu dla bezpieczeństwa
+        reset(); // Przywrócenie stanu początkowego przed generowaniem odpowiedzi skokowej
         Eigen::VectorXd s = Eigen::VectorXd::Zero(D); // Utworzenie wektora s i wypełnienie zerami
         for (int i = 0; i < D; i++)
         {
             s(i) = krok_online(1.0); // Generacja odpowiedzi dla skoku jednostkowego
         }
-        reset(); // Wyczyszczenie pamięci dla obiektu dla czystego startu regulacji
+        reset(); // Przywrócenie stanu początkowego przed rozpoczęciem regulacji
         return s;
     }
     virtual ~ObiektBaza() {}  // Destruktor

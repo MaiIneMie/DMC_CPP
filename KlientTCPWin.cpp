@@ -4,7 +4,6 @@
 #include <iostream>
 #include <ws2tcpip.h>
 
-// Klasa dziedziczy po ObiektBaza
 KlientTCPWin :: KlientTCPWin(const std::string& adres_ip, int port, int D, int kroki)
 : D(D), kroki(kroki), y_k(0.0), sock(INVALID_SOCKET)
 {
@@ -20,10 +19,10 @@ KlientTCPWin :: KlientTCPWin(const std::string& adres_ip, int port, int D, int k
         );
     }
 
-    // Stworzenie socketu
+    // Utworzenie gniazda TCP
     sock = socket(AF_INET, SOCK_STREAM, 0);
 
-    // Obsługa wyjątku socketu
+    // Sprawdzenie poprawności utworzenia gniazda
     if (sock == INVALID_SOCKET)
     {
         int kod = WSAGetLastError();
@@ -37,7 +36,7 @@ KlientTCPWin :: KlientTCPWin(const std::string& adres_ip, int port, int D, int k
     sockaddr_in server;
     server.sin_family = AF_INET;
     server.sin_port = htons(port);
-    // Obsługa wyjątku adresu
+    // Konwersja i weryfikacja adresu IPv4
     int wynik_ip = inet_pton(AF_INET, adres_ip.c_str(), &server.sin_addr);
     if (wynik_ip != 1)
     {
@@ -62,10 +61,10 @@ KlientTCPWin :: KlientTCPWin(const std::string& adres_ip, int port, int D, int k
 
     try
     {
-    // Konwersja wartości na double dla łatwiejszej integracji
+    // Konwersja parametrów do formatu double oczekiwanego przez serwer MATLAB
     double D_d = static_cast<double>(D);
     double kroki_d = static_cast<double>(kroki);
-    // Wysłanie liczby kroków i długości odpowiedzi skokowej
+    // Wysłanie długości odpowiedzi skokowej D, a następnie liczby kroków symulacji
     wyslij_wszystko(sock, (const char*)&D_d, sizeof(D_d));
     wyslij_wszystko(sock, (const char*)&kroki_d, sizeof(kroki_d));
     }

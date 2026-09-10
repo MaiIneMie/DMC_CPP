@@ -14,7 +14,7 @@ class Regulator
     Eigen::MatrixXd M;   // macierz dynamiczna (N×Nu)
     Eigen::MatrixXd Mp;  // macierz przeszłości (N×(D-1))
     Eigen::MatrixXd K;   // macierz wzmocnień (Nu×N)
-    Eigen::VectorXd s;   // Macierz odpowiedzi skokowej
+    Eigen::VectorXd s;   // wektor próbek odpowiedzi skokowej
 
     // Stan regulatora
     double u_k = 0.0;   // obecne sterowanie
@@ -31,11 +31,11 @@ class Regulator
     void oblicz_M();
     void oblicz_Mp();
     void oblicz_K();
-    void oblicz_macierze(); // Macierze
-    double ogranicz(double wartosc, double min, double max); // Ograniczenia
+    void oblicz_macierze(); // Obliczenie macierzy regulatora
+    double ogranicz(double wartosc, double min, double max); // Ograniczenie wartości do zadanego przedziału
 
     public:
-    // Inicjacja
+    // Konstruktory
     // Konstruktor 1 - generuje s z modelu wewnętrznego
     Regulator(int d, int n, int nu, double a, double b, double u_mi, double u_ma, double dv_mi, double dv_ma, double a_w, double b_w, int d_w);
 
@@ -43,7 +43,7 @@ class Regulator
     Regulator(int d, int n, int nu, double a, double b, double u_mi, double u_ma, double dv_mi, double dv_ma, Eigen::VectorXd s);
     
     void krok_regulacji(double y_k, double yzad_k); // Jeden krok regulacji
-    double get_u_k() const { return u_k; } // Getter dla Symulacja
+    double get_u_k() const { return u_k; } // Zwraca aktualną wartość sterowania
 };
 
 #endif

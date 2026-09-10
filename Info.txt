@@ -1,0 +1,48 @@
+Tytuł pracy: Projekt i implementacja biblioteki sterownika DMC dla komputerów klasy SOC
+Autor: Maia Inés Miernicka
+
+Zawartość archiwum
+
+1. Kod źródłowy C++
+   - main.cpp
+   - Regulator.cpp / Regulator.h
+   - Symulacja.cpp / Symulacja.h
+   - ObiektBaza.h
+   - ObiektSymulowany.cpp / ObiektSymulowany.h
+   - KlientTCP.cpp / KlientTCP.h
+   - KlientTCPWin.cpp / KlientTCPWin.h
+   - TCP.h
+   - TCPWin.h
+
+2. Pliki MATLAB
+   - serwer_dmc.m
+   - ObiektMATLAB.m
+
+3. Pliki wynikowe
+   - wyniki_dmc_A.csv
+   - wyniki_dmc_B.csv
+   - wyniki_dmc_C.csv
+
+4. Wizualizacja wyników
+   - plot - skrypt dla programu gnuplot
+
+5. Biblioteka Eigen
+   - katalog Eigen zawiera bibliotekę wykorzystywaną przez projekt do operacji macierzowych.
+
+Opis
+
+Projekt obejmuje implementację biblioteki sterownika predykcyjnego DMC (Dynamic Matrix Control) w języku C++.
+Kod umożliwia realizację symulacji z obiektem zaimplementowanym bezpośrednio w programie oraz współpracę z zewnętrznym modelem obiektu uruchomionym w środowisku MATLAB poprzez komunikację TCP/IP. Projekt zawiera osobne elementy komunikacji TCP przeznaczone dla systemów Linux oraz Windows.
+
+Wymagania
+
+- kompilator obsługujący C++
+- biblioteka Eigen - dołączona do archiwum
+- MATLAB – dla wariantu wykorzystującego zewnętrzny model obiektu
+- gnuplot – do wizualizacji wyników
+
+Uwagi
+
+Folder Eigen został dołączony do archiwum w wersji używanej podczas realizacji pracy.
+
+Pliki CSV zawierają wyniki scenariuszy testowych wykorzystanych podczas weryfikacji działania regulatora.

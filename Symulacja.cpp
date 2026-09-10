@@ -27,14 +27,14 @@ for(int k = 0; k < kroki; k++)
     y_historia[k] = y_nowe;
     u_historia[k] = reg.get_u_k();
     
-    // Aktualizaja y na kolejny krok
+    // Aktualizacja wartości wyjścia przed kolejnym krokiem
     y_k = y_nowe;
 
 }
 
 }
 
-// Zapis do pliku
+// Zapis historii wyjścia i sterowania do pliku CSV
 void Symulacja::zapisz_csv(const std::string& nazwa_pliku)
 {
 std::ofstream plik(nazwa_pliku);

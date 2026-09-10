@@ -10,7 +10,7 @@
 // Wysłanie dokładnie 'rozmiaru' bajtów z bufora 'dane' do socketu 'sock'.
 inline void wyslij_wszystko(int sock, const char* dane, int rozmiar)
 {
-    // Obsługa wyjątków niepoprawnego rozmiaru
+    // Walidacja rozmiaru danych
     if (rozmiar < 0)
     {
         throw std::invalid_argument("Rozmiar nie moze byc ujemny.");

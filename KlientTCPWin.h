@@ -22,7 +22,7 @@ class KlientTCPWin : public ObiektBaza
     double krok_online(double u_k) override;
     void reset() override
     {
-    // Serwer zarządza stanem obiektu po swojej stronie, reset nie wymaga komunikacji sieciowej.
+    // Brak operacji po stronie klienta; serwer resetuje zdalny obiekt po odebraniu D próbek odpowiedzi skokowej.
     };
     double get_stan() const override
     {

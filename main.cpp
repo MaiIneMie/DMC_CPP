@@ -6,28 +6,28 @@
 #include "Symulacja.h"
 #include "KlientTCP.h"
 
-// Przypadek modelu wewnętrznego
+// Wariant z wewnętrznym modelem regulatora
 void wariant(
     // Parametry dla regulatora
     int D, int N, int Nu, double alpha, double beta, double u_min, double u_max, double dv_min, double dv_max, double a_reg, double b_reg, int d_reg, 
-    // Parametry dla obiektu (model wewnętrzny)
+    // Parametry symulowanego obiektu sterowanego
     double a_obj, double b_obj, double d_obj,
     // Parametry dla symulacji
     int kroki, double yzad, const std::string& nazwa_pliku)
 {
-    // 1. Utworzenie instancji regulatora i wygenerowanie odpowiedzi skokowej
+    // Utworzenie instancji regulatora i wygenerowanie odpowiedzi skokowej
     Regulator reg(D, N, Nu, alpha, beta, u_min, u_max, dv_min, dv_max, a_reg, b_reg, d_reg);
-    // 2. Stworzenie obiektu sterowanego (takiego samego jak ten generujący s)
+    // Utworzenie symulowanego obiektu sterowanego
     ObiektSymulowany obj (a_obj, b_obj, d_obj);
-    // 3. Stworzenie instancji symulacji
+    // Stworzenie instancji symulacji
     Symulacja sym (kroki, yzad, obj, reg);
-    // 4. Uruchomienie pętli regulacji
+    // Uruchomienie pętli regulacji
     sym.uruchom();
-    // 5. Zapisanie wyników do pliku csv
+    // Zapisanie wyników do pliku csv
     sym.zapisz_csv(nazwa_pliku);
 }
 
-// Przypadek modelu zewnętrznego z odczytem
+// Wariant z zewnętrznym obiektem komunikującym się przez TCP
 void wariant(
     // Parametry dla regulatora
     int D, int N, int Nu, double alpha, double beta, double u_min, double u_max, double dv_min, double dv_max,
@@ -37,7 +37,7 @@ void wariant(
     const std::string& adres_pc)
 {
 
-    // Inicjacja komunikacji z obiektem
+    // Inicjalizacja komunikacji
     KlientTCP obj(adres_pc, 12345, D, kroki);
 
     // Utworzenie wektora s o długości D
@@ -46,13 +46,13 @@ void wariant(
     // Stworzenie regulatora
     Regulator reg(D, N, Nu, alpha, beta, u_min, u_max, dv_min, dv_max, s);
 
-    // 3. Stworzenie instancji symulacji
+    // Stworzenie instancji symulacji
     Symulacja sym (kroki, yzad, obj, reg);
 
-    // 4. Uruchomienie pętli regulacji
+    // Uruchomienie pętli regulacji
     sym.uruchom();
 
-    // 5. Zapisanie wyników do pliku csv
+    // Zapisanie wyników do pliku csv
     sym.zapisz_csv(nazwa_pliku);
 }
 
@@ -60,7 +60,7 @@ void wariant(
 int main(int argc, char* argv[])
 {
     // Adres PC, na którym działa serwer MATLAB.
-    // Bez argumentu domyślnie uzywa "127.0.0.1" (localhost, do testow na PC).
+    // Jeśli argument nie zostanie podany, używany jest adres 127.0.0.1 (localhost).
     std::string adres_pc = (argc > 1) ? argv[1] : "127.0.0.1";
 
     std::cout << "=== DMC w C++ - Symulacja ===" << std::endl << std::endl;
@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
     
     std::cout << "Scenariusz B zakończony." << std::endl << std::endl;
 
-    // === SCENARIUSZ C: Model zewnętrzny (TCP/MATLAB,C++) ===
+    // === SCENARIUSZ C: Zewnętrzny obiekt MATLAB połączony z klientem C++ przez TCP ===
     std::cout << "Scenariusz C: Model zewnętrzny przez TCP." << std::endl;
 
     try {

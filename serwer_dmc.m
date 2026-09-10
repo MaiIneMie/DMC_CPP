@@ -1,4 +1,4 @@
-% Nawiązanie połączenia
+% Utworzenie serwera TCP i oczekiwanie na klienta
 
 t = tcpserver("0.0.0.0", 12345);
 disp("Czekam na połączenie...");
@@ -17,7 +17,7 @@ end
 disp("Pomyślnie wysłano wektor s.");
 
 % Pętla regulacji
-obj = []; % reset obiektu
+obj = []; % Reset stanu obiektu przed rozpoczęciem regulacji
 for k = 1:kroki
     u = read(t, 1, "double");
     [y, obj] = ObiektMATLAB(obj, u);

@@ -20,10 +20,10 @@ bufor_u.resize (rozmiar,0.0);
 double ObiektSymulowany::krok_online(double u_k)
 {
 
-// Przesunięcie wartości bufora (usunięcie pierwszego, najstarszego elementu i wpisanie najnowszego na koniec)
-bufor_u[start] = u_k;          // nadpisanie najstarszy element
-start = (start + 1) % rozmiar; // przesunięcie wskaźnika o jedno miejsce dalej
-double u_d = bufor_u[start];   // najstarsza wartość to teraz start
+// Aktualizacja cyklicznego bufora sterowania
+bufor_u[start] = u_k;          // nadpisanie najstarszej próbki
+start = (start + 1) % rozmiar; // przesunięcie indeksu początku bufora
+double u_d = bufor_u[start];   // odczyt próbki opóźnionej o d kroków
 
 // Wykonanie równania różnicowego
 double y_k1 = a * y_k + b * u_d;

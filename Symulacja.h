@@ -11,17 +11,17 @@
 class Symulacja
 {
     private:
-    // Podanie parametrów dla symulacji (liczba kroków i wartość zadana)
+    // Parametry symulacji (liczba kroków i wartość zadana)
     const int kroki;
     const double yzad;
     ObiektBaza& obj; // Referencja do obiektu
     Regulator& reg; // Referencja do regulatora
-    // Historia dla y oraz u
+    // Zarejestrowane wartości wyjścia i sterowania
     std::vector<double> y_historia;
     std::vector<double> u_historia;
 
     public:
-    // Inicjacja
+    // Konstruktor
     Symulacja(int kroki, double yzad, ObiektBaza& obj, Regulator& reg);
     // Uruchomienie symulacji
     void uruchom();

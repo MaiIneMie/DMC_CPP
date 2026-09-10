@@ -23,10 +23,10 @@ Regulator::Regulator(int d, int n, int nu, double a, double b, double u_mi, doub
     
 void Regulator::oblicz_M()
 {
-    // Dostosowanie wymiarów macierzy (N wierszy, Nu kolumn)
+    // Ustawienie wymiarów macierzy (N wierszy, Nu kolumn)
     M.resize(N,Nu);
 
-    // Pętla wypełniająca macierz (j zer na początku każdej kolumny a reszta s)
+    // Wypełnienie macierzy M przesuniętymi próbkami odpowiedzi skokowej (j zer na początku każdej kolumny a reszta s)
     for (int j = 0; j < Nu; j++)
     {
         for (int i = 0; i < N; i++)
@@ -53,7 +53,7 @@ void Regulator::oblicz_Mp()
     {
         for( int j = 0; j < D -1; j++)
         {
-            // Obliczenie indeksu łączonego tak aby nie wyjść poza zakres s (D-1)
+            // Ograniczenie indeksu do ostatniej próbki odpowiedzi skokowej (D-1)
             int indeks = ( (i + j + 1) < D) ? (i + j + 1) :  (D-1);
             Mp(i,j) = s(indeks) - s(j);
         }
@@ -62,11 +62,11 @@ void Regulator::oblicz_Mp()
 
 void Regulator::oblicz_K()
 {
-    // Macierze wag (Identity - macierze jednostkowe)
+    // Macierze wag utworzone na podstawie macierzy jednostkowych
     Eigen::MatrixXd Psi = alpha * Eigen::MatrixXd::Identity(N, N);
     Eigen::MatrixXd Lambda = beta * Eigen::MatrixXd::Identity(Nu, Nu);
 
-    // Obliczenie K = (M^T * Psi * M + Lambda)^(-1) * M^T
+    // Obliczenie K = (M^T * Psi * M + Lambda)^(-1) * M^T * Psi
     // 1. Obliczenie A (A = M^T · Psi · M + Lambda)
     // 2. Obliczenie B (B = M^T · Psi)
     // 3. Rozłożenie A na trzy macierze - L (trójkątna dolna), D (diagonalna), L^T
@@ -75,7 +75,7 @@ void Regulator::oblicz_K()
     
 }
 
-void Regulator::oblicz_macierze() // Macierze
+void Regulator::oblicz_macierze() // Obliczenie macierzy M, Mp i K
 {
     oblicz_M();
     oblicz_Mp();
@@ -95,16 +95,16 @@ void Regulator::krok_regulacji(double y_k, double yzad_k)
     // Wektor wartości zadanych Yzad (N elementów = N wierszy)
     Eigen::VectorXd Yzad = Eigen::VectorXd::Constant(N, yzad_k);
 
-    // Wektor wolnej odpowiedzi z przeszłością Y0 = y_k + Mp*v
+    // Wektor odpowiedzi swobodnej uwzględniający historię przyrostów sterowania Y0 = y_k + Mp*v
     Eigen::VectorXd Y0 = Eigen::VectorXd::Constant(N, y_k) + Mp * v;
 
     // Wektor błędu E = Yzad - Y0
     Eigen::VectorXd E = Yzad - Y0;
 
-    // Wektor przyrostów sterowania v = K * E
+    // Wektor planowanych przyrostów sterowania dU = K * E
     Eigen::VectorXd przyrosty = K * E;
 
-    // Pobranie pierwszego elementu z tablicy przyrostów
+    // Pobranie pierwszego elementu wektora
     double v_k = przyrosty(0);
 
     // Ograniczenie przyrostu
@@ -113,15 +113,15 @@ void Regulator::krok_regulacji(double y_k, double yzad_k)
     // Obliczenie nowego sterowania
     u_k = u_k + v_k;
 
-    // Ograniczenie sterowanie
+    // Ograniczenie sterowania
     u_k = ogranicz(u_k, u_min, u_max);
 
-    // Aktualizacja historii przyrostów
+    // Przesunięcie historii przyrostów o jedną pozycję
     for (int i = v.size() - 1; i > 0; i--) // Zaczynając od końca w dół
     {
         v(i) = v(i - 1); // Przypisanie elementowi wartości o jeden mniejszej (28 skopiowany z 27 itd)
     }
 
-    v(0) = v_k; // Element pierwszy to najnowszy przyrost
+    v(0) = v_k; // Zapisanie najnowszego przyrostu na początku historii
 } 
 
