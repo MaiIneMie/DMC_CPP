@@ -24,7 +24,7 @@ Zawartość archiwum
    - wyniki_dmc_C.csv
 
 4. Wizualizacja wyników
-   - plot - skrypt dla programu gnuplot
+   - plot.gp - skrypt dla programu gnuplot
 
 5. Biblioteka Eigen
    - katalog Eigen zawiera bibliotekę wykorzystywaną przez projekt do operacji macierzowych.

@@ -119,7 +119,7 @@ void Regulator::krok_regulacji(double y_k, double yzad_k)
     // Przesunięcie historii przyrostów o jedną pozycję
     for (int i = v.size() - 1; i > 0; i--) // Zaczynając od końca w dół
     {
-        v(i) = v(i - 1); // Przypisanie elementowi wartości o jeden mniejszej (28 skopiowany z 27 itd)
+        v(i) = v(i - 1); // Przesunięcie poprzednich przyrostów sterowania o jedną pozycję w historii
     }
 
     v(0) = v_k; // Zapisanie najnowszego przyrostu na początku historii
